@@ -132,26 +132,24 @@ function changeAppPackageJsonName(appPath, name, url) {
  */
 function buildApp(src, dest, options, callback) {
   const appArgs = selectAppArgs(options);
-  copy(src, dest, (error) => {
-    if (error) {
-      callback(`Error Copying temporary directory: ${error}`);
-      return;
-    }
+  const { spawnSync } = require('child_process');
+  var cp = spawnSync("cp", ["-Rv", "-a", "-T", src, dest]);
+  console.log(cp.stdout.toString());
+  var chmod = spawnSync("chmod", ["-Rv", "a+w", dest]);
+  console.log(chmod.stdout.toString());
+  fs.writeFileSync(
+    path.join(dest, '/nativefier.json'),
+    JSON.stringify(appArgs),
+  );
 
-    fs.writeFileSync(
-      path.join(dest, '/nativefier.json'),
-      JSON.stringify(appArgs),
-    );
-
-    maybeCopyScripts(options.inject, dest)
-      .catch((err) => {
-        log.warn(err);
-      })
-      .then(() => {
-        changeAppPackageJsonName(dest, appArgs.name, appArgs.targetUrl);
-        callback();
-      });
-  });
+  maybeCopyScripts(options.inject, dest)
+    .catch((err) => {
+      log.warn(err);
+    })
+    .then(() => {
+      changeAppPackageJsonName(dest, appArgs.name, appArgs.targetUrl);
+      callback();
+    });
 }
 
 export default buildApp;

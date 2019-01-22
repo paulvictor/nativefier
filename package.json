@@ -59,7 +59,8 @@
     "shelljs": "^0.8.1",
     "source-map-support": "^0.5.3",
     "tmp": "0.0.33",
-    "validator": "^10.2.0"
+    "validator": "^10.2.0",
+    "wurl": "^2.5.3"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
